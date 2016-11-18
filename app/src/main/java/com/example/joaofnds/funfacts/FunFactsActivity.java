@@ -8,23 +8,29 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import io.realm.Realm;
+
 public class FunFactsActivity extends AppCompatActivity {
 	// Declare our View variables
 	private TextView mFactTextView;
 	private Button mShowFactButton;
-	private FactBook mFactBook = new FactBook();
-    private ColorWheel mColorWheel = new ColorWheel();
+	private FactBook mFactBook;
+    private ColorWheel mColorWheel;
     private RelativeLayout mRelativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Realm.init(FunFactsActivity.this);
         setContentView(R.layout.activity_fun_facts);
 
 		// Assing the Views fom the layout file corresponding to the variables
 		mFactTextView = (TextView) findViewById(R.id.factTextView);
 		mShowFactButton = (Button) findViewById(R.id.showFactButton);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
+
+        mFactBook = new FactBook();
+        mColorWheel = new ColorWheel();
 
 		View.OnClickListener listener = new View.OnClickListener() {
 

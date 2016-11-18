@@ -2,9 +2,16 @@ package com.example.joaofnds.funfacts;
 
 import java.util.Random;
 
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
+
 public class FactBook {
 
-    private final String[] mFacts = new String[]{
+    public RealmList<Fact> mFacts;
+    private Realm realm;
+
+    private final String[] mFactsArray = new String[]{
             "Ants stretch when they wake up in the morning.",
             "Ostriches can run faster than horses.",
             "Olympic gold medals are actually made mostly of silver.",
@@ -17,11 +24,25 @@ public class FactBook {
             "Mammoths still walked the earth when the Great Pyramid was being built."
     };
 
+    public FactBook() {
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for (String fact : mFactsArray) {
+                    Fact f = new Fact();
+                    f.setFact(fact);
+                    realm.copyToRealmOrUpdate(f);
+                }
+            }
+        });
+    }
+
     public String getFact() {
 
-        String fact = "";
+        RealmResults<Fact> results = realm.where(Fact.class).findAll();
         Random randomGenerator = new Random();
-        int randomNumber = randomGenerator.nextInt(mFacts.length);
-        return mFacts[randomNumber];
+        int randomNumber = randomGenerator.nextInt(results.size());
+        return results.get(randomNumber).getFact();
     }
 }
